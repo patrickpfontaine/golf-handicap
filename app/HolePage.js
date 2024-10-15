@@ -16,6 +16,7 @@ export default function Second() {
   );
 }*/
 
+
 import * as React from "react";
 import { Text, StyleSheet, View, Pressable, Platform } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -50,31 +51,38 @@ const Content = () => {
   return (
     <>
       <Text style={styles.shadowHill}>
-        <Text style={styles.shadowHill1}>Shadow Hill</Text>
-        <Text style={styles.text}>{` `}</Text>
+        <Text style={styles.shadowHill1}>Shadow Hill | 18 Holes</Text>
       </Text>
 
-      {Array.from({ length: 7 }).map((_, index) => (
-        <View key={index} style={[styles[`button${index + 1}`], index % 2 === 0 ? styles.buttonPosition1 : styles.buttonPosition2]}>
-          <View style={styles.button1Child} />
-          <Text style={styles.text1}>{index + 1}</Text>
-        </View>
-      ))}
+      <View style={styles.textWrapper}>
+        <Text style={styles.holeX}>Hole: x</Text>
+        <Text style={styles.parY}>Par: y</Text>
+      </View>
 
-      <Pressable style={styles.nextbutton} onPress={() => {}}>
-        <View style={styles.nextbuttonChild} />
-        <Text style={styles.next}>NEXT</Text>
+      
+      <View style={styles.buttonGrid}>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <View key={index} style={styles.buttonWrapper}>
+            <View style={styles.button}>
+              <Text style={styles.text1}>{index + 1}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      <Pressable style={styles.nextButton} onPress={() => {}}>
+        <View style={styles.nextButtonInner} />
+        <Text style={styles.nextText}>Next Hole</Text> 
       </Pressable>
-
-      <Text style={styles.parY}>Par: y</Text>
-      <Text style={styles.holeX}>Hole: x</Text>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1,  
+    alignItems: 'center', // Ensure center alignment for the entire container
+    justifyContent: 'center', // Ensure vertical centering
   },
   // Web-specific gradient using inline CSS
   webGradient: {
@@ -85,98 +93,107 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonPosition2: {
-    height: 127,
-    width: 101,
-    top: "50%",
-    left: "50%",
-    position: "absolute",
-  },
-  buttonPosition1: {
-    marginTop: -20,
-    height: 127,
-    width: 101,
-    top: "50%",
-    left: "50%",
-    position: "absolute",
-  },
-  text1: {
-    marginTop: -36.5,
-    marginLeft: -50.5,
-    height: 100,
-    width: 100,
-    top: "50%",
-    left: "50%",
-    color: Color.colorBlack,
-    textAlign: "center",
-    fontFamily: FontFamily.katibehRegular,
-    fontSize: FontSize.size_31xl,
-  },
-  nextbutton: {
-    top: 686,
-    left: 211,
-    height: 103,
-    width: 142,
-    position: "absolute",
-  },
-  nextbuttonChild: {
-    top: 0,
-    left: 0,
-    backgroundColor: Color.allButton,
-    borderRadius: Border.br_xl,
-    height: '100%',
-    width: '100%',
-  },
-  next: {
-    top: 32,
-    left: 30,
-    color: Color.colorBlack,
-    fontFamily: FontFamily.katibehRegular,
-    fontSize: FontSize.size_31xl,
-    textAlign: "center",
-  },
-  parY: {
-    left: 217,
-    color: Color.allButton,
-    textAlign: "center",
-    fontFamily: FontFamily.katibehRegular,
-    fontSize: FontSize.size_31xl,
-    position: "absolute",
-  },
-  holeX: {
-    left: 51,
-    color: Color.allButton,
-    textAlign: "center",
-    fontFamily: FontFamily.katibehRegular,
-    fontSize: FontSize.size_31xl,
-    position: "absolute",
-  },
   shadowHill1: {
     color: Color.allButton,
   },
   shadowHill: {
-    marginLeft: -96,
-    top: 99,
-    textAlign: "center",
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    top: 30,
+    textAlign: 'center',
     fontFamily: FontFamily.katibehRegular,
-    fontSize: FontSize.size_31xl,
-    left: "50%",
-    position: "absolute",
+    fontSize: FontSize.size_24xl,
+    left: '25%',
+    position: 'absolute',
+    //transform: [{ translateX: -50 }],
   },
-  button1Child: {
-    marginTop: -63.5,
-    marginLeft: -49.5,
+  textWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 80,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '60%',
+  },
+  holeX: {
+    flex: 1, // Allow the text to take available space
+    fontSize: FontSize.size_50xl,
+    color: Color.allButton,
+    fontFamily: FontFamily.katibehRegular,
+    textAlign: 'center', // Center text inside the element
+  },
+  parY: {
+    flex: 1, // Allow the text to take available space
+    fontSize: FontSize.size_38xl,
+    color: Color.allButton,
+    fontFamily: FontFamily.katibehRegular,
+    textAlign: 'center', // Center text inside the element
+  },
+  // Button grid container for 2x4 layout
+  buttonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignItems: 'center',
+    marginTop: 20,
+    width: '60%', // Set width to ensure buttons align to the center
+  },
+  buttonWrapper: {
+    width: '50%', // 50% width for two buttons per row
+    padding: 10,
+    alignItems: 'center',
+  },
+  button: {
+    height: 100,
+    width: 100,
     backgroundColor: Color.allButton,
     borderRadius: Border.br_xl,
-    position: "absolute",
-    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text1: {
+    fontSize: FontSize.size_50xl,
+    color: Color.colorBlack,
+    fontFamily: FontFamily.katibehRegular,
+    textAlign: 'center',
+    lineHeight: FontSize.size_31xl + 90, // Adjust line height to vertically center text
+  },
+  nextButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    height: 60,
+    width: 150,
+    backgroundColor: Color.allButton,
+    borderRadius: Border.br_xl,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nextButtonInner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    backgroundColor: Color.allButton,
+    borderRadius: Border.br_xl,
+  },
+  nextText: {
+    fontSize: FontSize.size_38xl,
+    color: Color.colorBlack,
+    fontFamily: FontFamily.katibehRegular,
+    textAlign: 'center', // Center text inside the button
+    lineHeight: FontSize.size_31xl + 45, // Adjust line height to vertically center text
   },
   holePage: {
     flex: 1,
-    width: "100%",
-    height: 844,
-    overflow: "hidden",
-    backgroundColor: "transparent",
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
   },
 });
 
