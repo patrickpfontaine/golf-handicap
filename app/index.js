@@ -103,8 +103,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   begin: {
-    fontSize: FontSize.size_31xl,
+    fontSize: FontSize.size_50xl,
     color: '#000',
+    fontFamily: FontFamily.katibehRegular,
+    textAlign: 'center',
+    lineHeight: FontSize.size_50xl + 60,
   },
   frontPage: {
     flex: 1,
