@@ -5,7 +5,7 @@ export default function Layout() {
   return (
     <GameProvider>
       <Stack>
-        <Stack.Screen name="index" options={{ title: 'Home' }} />
+        <Stack.Screen name="HomeScreen" options={{ title: 'Home Page' }} />
         <Stack.Screen name="HolePage" options={{ title: 'Hole Page' }} />
         <Stack.Screen name="FinishPage" options={{ title: 'Finish Page' }} />
       </Stack>
