@@ -189,15 +189,22 @@ const styles = StyleSheet.create({
 export default HolePage;
 */
 
-import React, { useState } from "react";
+import React from "react";
 import { Text, StyleSheet, View, Pressable, Platform } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { useGame } from './context/GameContext';
 import { Color, FontFamily, FontSize, Border } from "./GlobalStyles";
 
 const HolePage = () => {
-  const [scores, setScores] = useState(Array(18).fill(0));
-  const [currentHole, setCurrentHole] = useState(0);
+  const {
+    scores,
+    setScores,
+    currentHole,
+    setCurrentHole,
+    totalScore,
+    getCurrentParValue
+  } = useGame();
   const router = useRouter();
 
   const handleScorePress = (score) => {
@@ -218,13 +225,16 @@ const HolePage = () => {
     }
   };
 
-  const handleCancel = () => {
-    setScores(Array(18).fill(0));
-    setCurrentHole(0);
+  const handleCancel = async () => {
     router.replace('/');
   };
 
-  const totalScore = scores.reduce((acc, score) => acc + score, 0);
+  const handleFinish = () => {
+    router.push({
+      pathname: '/FinishPage',
+      params: { totalScore: totalScore }
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -236,8 +246,10 @@ const HolePage = () => {
             handleNextHole={handleNextHole}
             handlePreviousHole={handlePreviousHole}
             handleCancel={handleCancel}
+            handleFinish={handleFinish}
             totalScore={totalScore}
             scores={scores}
+            par={getCurrentParValue()}
           />
         </div>
       ) : (
@@ -254,8 +266,10 @@ const HolePage = () => {
             handleNextHole={handleNextHole}
             handlePreviousHole={handlePreviousHole}
             handleCancel={handleCancel}
+            handleFinish={handleFinish}
             totalScore={totalScore}
             scores={scores}
+            par={getCurrentParValue()}
           />
         </LinearGradient>
       )}
@@ -263,7 +277,17 @@ const HolePage = () => {
   );
 };
 
-const Content = ({ currentHole, handleScorePress, handleNextHole, handlePreviousHole, handleCancel, totalScore, scores }) => {
+const Content = ({ 
+  currentHole, 
+  handleScorePress, 
+  handleNextHole, 
+  handlePreviousHole, 
+  handleCancel, 
+  handleFinish, 
+  totalScore, 
+  scores,
+  par 
+}) => {
   return (
     <>
       <Text style={styles.shadowHill}>
@@ -271,14 +295,20 @@ const Content = ({ currentHole, handleScorePress, handleNextHole, handlePrevious
       </Text>
 
       <View style={styles.textWrapper}>
-        <Text style={styles.holeLabel}>Hole: {currentHole + 1} Par: x</Text>
+        <Text style={styles.holeLabel}>Hole: {currentHole + 1} Par: {par}</Text>
         <Text style={styles.totalScore}>Total Score: {totalScore}</Text>
       </View>
 
       <View style={styles.buttonGrid}>
         {Array.from({ length: 8 }).map((_, index) => (
           <View key={index} style={styles.buttonWrapper}>
-            <Pressable style={styles.button} onPress={() => handleScorePress(index + 1)}>
+            <Pressable 
+              style={[
+                styles.button,
+                scores[currentHole] === index + 1 && styles.selectedButton
+              ]} 
+              onPress={() => handleScorePress(index + 1)}
+            >
               <Text style={styles.numText}>{index + 1}</Text>
             </Pressable>
           </View>
@@ -287,16 +317,18 @@ const Content = ({ currentHole, handleScorePress, handleNextHole, handlePrevious
 
       <Pressable
         style={styles.prevButton}
-        onPress={currentHole === 0 ? handleCancel : handlePreviousHole}
->
+        onPress={currentHole === 0 ? handleCancel : handlePreviousHole}>
         <Text style={styles.prevText}>
-          {currentHole === 0 ? 'Back' : 'Previous Hole'}
+          {currentHole === 0 ? 'Back' : 'Previous'}
         </Text>
       </Pressable>
 
-
-      <Pressable style={styles.nextButton} onPress={handleNextHole}>
-        <Text style={styles.nextText}>Next Hole</Text>
+      <Pressable
+        style={styles.nextButton}
+        onPress={currentHole === 17 ? handleFinish : handleNextHole}>
+        <Text style={styles.nextText}>
+          {currentHole === 17 ? 'Finish' : 'Next Hole'}
+        </Text>
       </Pressable>
     </>
   );
