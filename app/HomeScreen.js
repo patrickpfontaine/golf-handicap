@@ -7,7 +7,7 @@ import { FontSize, FontFamily, Color } from './GlobalStyles';
 import { useRouter } from 'expo-router';
 
 const HomeScreen = () => {
-  const router = useRouter();
+  
   const [fontsLoaded, fontError] = useFonts({
     Katibeh_400Regular: require('../assets/fonts/Katibeh-Regular.ttf'),
   });
@@ -42,31 +42,35 @@ const HomeScreen = () => {
 };
 
 const HomeContent = () => {
+  const router = useRouter(); 
   return (
     <View style={styles.contentContainer}>
+      
       <Text style={styles.shadowHillGolf}>{`Shadow Hill!\nGolf Course`}</Text>
       <Text style={styles.holes}>18 Holes</Text>
       
-      <Pressable
-        style={styles.beginbutton}
+      <Pressable style={styles.beginbutton} 
         onPress={() => router.push("/HolePage")}
       >
         <Image
           style={styles.beginbuttonChild}
           source={require('../assets/rectangle-1.png')}
-      />
+        />
         <Text style={styles.begin}>Begin</Text>
       </Pressable>
 
-      <Link href="/ScoresScreen" asChild>
-        <Pressable style={[styles.beginbutton, styles.scoresButton]}>
-          <Image
-            style={styles.beginbuttonChild}
-            source={require('../assets/rectangle-1.png')}
-          />
-          <Text style={styles.begin}>Scores</Text>
-        </Pressable>
-      </Link>
+      <Pressable 
+        style={[styles.beginbutton, styles.scoresButton]}
+        onPress={() => router.push("/ScoresScreen")}
+      >
+        <Image
+        style={styles.beginbuttonChild}
+        source={require('../assets/rectangle-1.png')}
+      />
+        <Text style={styles.begin}>Scores</Text>
+      </Pressable>
+
+      
     </View>
   );
 };
