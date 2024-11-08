@@ -9,15 +9,15 @@ import { useGame } from './context/GameContext';
 const FinishPage = () => {
   const router = useRouter();
   const { totalScore } = useLocalSearchParams();
-  const { resetGame } = useGame();
-  const parsedTotalScore = Number(totalScore) || 0;
+  const { resetGame, scores, totalScore: calculatedTotalScore } = useGame(); // Pull scores from context
+  const parsedTotalScore = Number(totalScore) || calculatedTotalScore; // Use passed or calculated total score
   const handicap = parsedTotalScore - 72;
 
   const saveCurrentScoreAndResetGame = async () => {
     try {
-      // Save the current game score
+      // Save the current game score along with the hole-by-hole scores
       const currentDate = new Date().toISOString();
-      const gameRecord = { date: currentDate, score: parsedTotalScore };
+      const gameRecord = { date: currentDate, totalScore: parsedTotalScore, scores }; // Include hole scores
       
       // Get existing saved games
       const savedGamesJSON = await AsyncStorage.getItem('@saved_games');
@@ -40,7 +40,7 @@ const FinishPage = () => {
 
   const handleDone = async () => {
     await saveCurrentScoreAndResetGame();
-    router.replace('/');
+    router.replace('/'); // Navigate to home screen
   };
 
   return (

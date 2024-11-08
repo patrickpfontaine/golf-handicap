@@ -4,8 +4,10 @@ import { Link } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 import { FontSize, FontFamily, Color } from './GlobalStyles';
+import { useRouter } from 'expo-router';
 
 const HomeScreen = () => {
+  const router = useRouter();
   const [fontsLoaded, fontError] = useFonts({
     Katibeh_400Regular: require('../assets/fonts/Katibeh-Regular.ttf'),
   });
@@ -39,19 +41,30 @@ const HomeScreen = () => {
   );
 };
 
-// Separate component for the content
 const HomeContent = () => {
   return (
     <View style={styles.contentContainer}>
-      <Text style={styles.shadowHillGolf}>{`Shadow Hill\nGolf Course`}</Text>
+      <Text style={styles.shadowHillGolf}>{`Shadow Hill!\nGolf Course`}</Text>
       <Text style={styles.holes}>18 Holes</Text>
-      <Link href="/HolePage" asChild>
-        <Pressable style={styles.beginbutton}>
+      
+      <Pressable
+        style={styles.beginbutton}
+        onPress={() => router.push("/HolePage")}
+      >
+        <Image
+          style={styles.beginbuttonChild}
+          source={require('../assets/rectangle-1.png')}
+      />
+        <Text style={styles.begin}>Begin</Text>
+      </Pressable>
+
+      <Link href="/ScoresScreen" asChild>
+        <Pressable style={[styles.beginbutton, styles.scoresButton]}>
           <Image
             style={styles.beginbuttonChild}
             source={require('../assets/rectangle-1.png')}
           />
-          <Text style={styles.begin}>Begin</Text>
+          <Text style={styles.begin}>Scores</Text>
         </Pressable>
       </Link>
     </View>
@@ -97,6 +110,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  scoresButton: {
+    marginTop: 100,
   },
   beginbuttonChild: {
     position: 'absolute',

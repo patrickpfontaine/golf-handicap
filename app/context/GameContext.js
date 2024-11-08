@@ -8,9 +8,11 @@ export function GameProvider({ children }) {
   const [currentHole, setCurrentHole] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [parValues] = useState([4, 3, 4, 5, 4, 3, 4, 5, 4, 4, 3, 4, 5, 4, 3, 4, 5, 4]); // Example par values
+  const [pastGames, setPastGames] = useState([]);
 
   useEffect(() => {
     initializeGame();
+    loadPastGames(); // Load past games when the app starts
   }, []);
 
   useEffect(() => {
@@ -18,6 +20,7 @@ export function GameProvider({ children }) {
     saveScores();
   }, [scores]);
 
+  // Initialize game by loading scores from storage
   const initializeGame = async () => {
     try {
       const existingScores = await AsyncStorage.getItem('@user_scores');
@@ -34,6 +37,48 @@ export function GameProvider({ children }) {
     }
   };
 
+  // Load past games from AsyncStorage
+  const loadPastGames = async () => {
+    try {
+      const storedPastGames = await AsyncStorage.getItem('@past_games');
+      if (storedPastGames) {
+        setPastGames(JSON.parse(storedPastGames));
+      }
+    } catch (error) {
+      console.error('Error loading past games:', error);
+    }
+  };
+
+  // Save current game state to AsyncStorage
+  const saveScores = async () => {
+    try {
+      await AsyncStorage.setItem('@user_scores', JSON.stringify(scores));
+    } catch (error) {
+      console.error('Error saving scores:', error);
+    }
+  };
+
+  // Save the completed game to past games when all holes are filled
+  const savePastGame = async () => {
+    if (scores.every(score => score > 0)) {
+      const newGame = {
+        date: new Date().toISOString(),
+        totalScore,
+        scores,
+      };
+      const updatedPastGames = [...pastGames, newGame];
+      setPastGames(updatedPastGames);
+
+      try {
+        await AsyncStorage.setItem('@past_games', JSON.stringify(updatedPastGames));
+        resetGame(); // Reset the game after saving it
+      } catch (error) {
+        console.error('Error saving past game:', error);
+      }
+    }
+  };
+
+  // Reset the game to its initial state
   const resetGame = async () => {
     try {
       const newScores = Array(18).fill(0);
@@ -46,14 +91,7 @@ export function GameProvider({ children }) {
     }
   };
 
-  const saveScores = async () => {
-    try {
-      await AsyncStorage.setItem('@user_scores', JSON.stringify(scores));
-    } catch (e) {
-      console.error('Error saving scores:', e);
-    }
-  };
-
+  // Calculate the total score
   const calculateTotalScore = () => {
     const total = scores.reduce((acc, score) => acc + score, 0);
     setTotalScore(total);
@@ -75,7 +113,9 @@ export function GameProvider({ children }) {
     getCurrentParValue,
     getScoreRelativeToPar,
     initializeGame,
-    resetGame, // Add resetGame to the context value
+    resetGame,
+    savePastGame, // Add savePastGame to save completed games
+    pastGames, // Add pastGames to the context value
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
